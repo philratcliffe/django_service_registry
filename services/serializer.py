@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from services.models import Service
+from .models import Service
 
 
 class ServiceSerializer(ModelSerializer):
