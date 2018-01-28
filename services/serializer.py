@@ -5,4 +5,4 @@ from .models import Service
 class ServiceSerializer(ModelSerializer):
     class Meta:
         model = Service
-        fields = ('name', 'version')
+        fields = ('service', 'version')
