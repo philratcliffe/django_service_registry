@@ -131,7 +131,7 @@ class DjangoRestFrameworkTests(TestCase):
 
     def test_remove_service(self):
         response = self.client.delete(self.delete_url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 204)
         data = json.loads(force_text(response.content))
         expected_data = {'service': 'test', 'change': 'removed'}
         self.assertEqual(data, expected_data)
@@ -144,7 +144,7 @@ class DjangoRestFrameworkTests(TestCase):
         self.assertEqual(data, expected_data)
 
     def test_update_service(self):
-        response = self.client.put(self.update_url, {
+        self.client.put(self.update_url, {
             'service': 'testu',
             'version': '0.0.9'
         })
