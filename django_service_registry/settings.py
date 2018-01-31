@@ -25,7 +25,7 @@ SECRET_KEY = 'c(h39egkth=f&eo)3(d&%vb%fsxllffc1_)w@e51n5se@i@qqv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.155']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'services.apps.ServicesConfig',
     'rest_framework',
     'debug_toolbar',
+    'behave_django',
 ]
 
 MIDDLEWARE = [

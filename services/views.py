@@ -56,7 +56,7 @@ def find_or_delete(request, service, version=None):
         if queryset:
             queryset.delete()
             data = {'service': service, 'change': 'removed'}
-            return Response(data, status.HTTP_200_OK)
+            return Response(data, status.HTTP_204_NO_CONTENT)
 
         data = {'error': 'not found'}
         return Response(data, status.HTTP_404_NOT_FOUND)
