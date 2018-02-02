@@ -1,5 +1,6 @@
 from behave import given, then, when
 from rest_framework import status
+from rest_framework.test import APIClient
 
 
 @given(u'there is an empty ServiceRegistry')
@@ -16,24 +17,12 @@ def setup_db(context):
         s.save()
 
 
-@then(u'I should be notified with a change "{change}"')
-def check_notification(context, change):
-    if context.response.status_code == status.HTTP_201_CREATED:
-        context.test.assertEqual(change, 'created')
-    elif context.response.status_code == status.HTTP_204_NO_CONTENT:
-        context.test.assertEqual(change, 'removed')
-    elif context.response.status_code == status.HTTP_200_OK:
-        context.test.assertEqual(change, 'changed')
-    else:
-        assert ("Error: unexpected response")
-
-
 @when(u'I add a service "{service}" with version "{version}')
 def add_service_with_version(context, service, version):
     create_url = context.get_url('list_or_add_endpoint')
+    client = APIClient()
     create_data = {'service': service, 'version': version}
-    context.response = context.test.client.post(
-        create_url, create_data, format='json')
+    context.response = client.post(create_url, create_data, format='json')
     context.test.assertEqual(context.response.status_code,
                              status.HTTP_201_CREATED)
 
@@ -44,7 +33,8 @@ def step1_impl(context, service, version):
         'service': service,
         'version': version
     })
-    context.response = context.test.client.get(find_url)
+    client = APIClient()
+    context.response = client.get(find_url)
 
 
 @when(u'I search for a service "{service}" without version')
@@ -52,24 +42,45 @@ def step2_impl(context, service):
     find_url = context.get_url('find_or_delete_endpoint', **{
         'service': service
     })
-    context.response = context.test.client.get(find_url)
+    client = APIClient()
+    context.response = client.get(find_url)
 
 
 @when(u'I update a service')
 def step3_impl(context):
-    update_url = context.get_url('update_endpoint', **{'pk': 1})
+    from services.models import Service
+    client = APIClient()
+    id = Service.objects.all()[0].id
+    update_url = context.get_url('update_endpoint', **{'pk': id})
     update_data = {
-        'service': 'test-update',
+        'service': 'testupdate',
         'version': '0.0.9',
     }
-    context.response = context.test.client.put(
-        update_url, update_data, format='json')
+    context.response = client.put(update_url, update_data, format='json')
+    id = Service.objects.all()[0].id
+    print("update_url {}".format(update_url))
+    print("update_data {}".format(update_data))
+    print("id {}".format(id))
 
 
 @when(u'I remove a service')
 def step4_impl(context):
     remove_url = context.get_url('find_or_delete_endpoint', service='test')
-    context.response = context.test.client.delete(remove_url)
+    client = APIClient()
+    context.response = client.delete(remove_url)
+
+
+@then(u'I should be notified with a change "{change}"')
+def check_notification(context, change):
+    status_code = context.response.status_code
+    if context.response.status_code == status.HTTP_201_CREATED:
+        context.test.assertEqual(change, 'created')
+    elif context.response.status_code == status.HTTP_204_NO_CONTENT:
+        context.test.assertEqual(change, 'removed')
+    elif context.response.status_code == status.HTTP_200_OK:
+        context.test.assertEqual(change, 'changed')
+    else:
+        assert False, "Error: unexpected status_code {}".format(status_code)
 
 
 @then(u'the service should be removed')
