@@ -27,10 +27,14 @@ GET /services/v1/<name>
 Django REST framework allows the API to be browsed. Simply point your browser
 at http://127.0.0.1:8000/services/v1 to get started.
 
-You can run all the tests in the tests module using the following command:
+There are unit and BDD tests that can be run as shown below:
 
 ```bash
 $ python manage.py test
+```
+
+```bash
+$ python manage.py behave
 ```
 
 In addition, you can test the API from the command line using cURL. This 
