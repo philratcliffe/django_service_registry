@@ -54,7 +54,10 @@ class DjangoRestFrameworkTests(TestCase):
                 'service': 'test',
                 'version': '0.0.4'
             })
-        self.update_url = reverse('update_endpoint', kwargs={'pk': '1'})
+
+        id = Service.objects.all()[0].id
+
+        self.update_url = reverse('update_endpoint', kwargs={'pk': id})
 
     def test_list(self):
         response = self.client.get(self.list_url)
@@ -131,6 +134,7 @@ class DjangoRestFrameworkTests(TestCase):
 
     def test_remove_service(self):
         response = self.client.delete(self.delete_url)
+        print(self.delete_url)
         self.assertEquals(response.status_code, 204)
         data = json.loads(force_text(response.content))
         expected_data = {'service': 'test', 'change': 'removed'}
