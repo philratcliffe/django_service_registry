@@ -1,6 +1,6 @@
 # Created by Tymoteusz Paul at 18/01/2016
 
-# Chanegs to setup table
+# Changes to setup tests that need input data
 Feature: ServiceRegistry
 
   Background:
